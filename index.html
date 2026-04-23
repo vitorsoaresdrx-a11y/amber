@@ -589,8 +589,16 @@
           body: JSON.stringify({ amount })
         });
 
-        const paymentData = await response.json();
-        console.log('API Response:', paymentData);
+        const responseText = await response.text();
+        console.log('Status:', response.status);
+        console.log('Response:', responseText);
+
+        let paymentData;
+        try {
+          paymentData = JSON.parse(responseText);
+        } catch (e) {
+          throw new Error('Resposta não é JSON: ' + responseText.substring(0, 200));
+        }
 
         if (!response.ok) {
           throw new Error(JSON.stringify(paymentData));
