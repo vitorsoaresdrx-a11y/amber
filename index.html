@@ -589,8 +589,12 @@
           body: JSON.stringify({ amount })
         });
 
-        if (!response.ok) throw new Error('Erro ao criar pagamento');
         const paymentData = await response.json();
+        console.log('API Response:', paymentData);
+
+        if (!response.ok) {
+          throw new Error(JSON.stringify(paymentData));
+        }
 
         if (paymentData.data?.redirectUrl) {
           window.location.href = paymentData.data.redirectUrl;
