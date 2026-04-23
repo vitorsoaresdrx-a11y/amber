@@ -1,0 +1,25 @@
+{
+  "name": "saveweb2zip-com-onlyfans-com",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vitorsoaresdrx-a11y/amber.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/vitorsoaresdrx-a11y/amber/issues"
+  },
+  "homepage": "https://github.com/vitorsoaresdrx-a11y/amber#readme",
+  "devDependencies": {
+    "vite": "^8.0.9"
+  }
+}
