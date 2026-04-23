@@ -529,10 +529,6 @@
   </div>
 
   <script>
-    // CONFIGURATION (Fill with your Livepix credentials)
-    const CLIENT_ID = 'bab59bda-5a11-40d7-a3a0-8d62aeadbd7c';
-    const CLIENT_SECRET = 'repaOnu2ffG5xAOkQNb3CP0ryz63c84siE/GR/4bmkvGUVj1tMOLPpYwqnKJtMWZaH45Ye1EydJ5MtlKJ4qgfKFA1q5BRzzmD/FHpsQ0lXxEh6PyvUPnpCoY9UAxXixVVDJZIdJFfWiig1lyjkpeya51D0X2u/7cSxAQobERl7w';
-
     window.addEventListener('load', () => {
       setTimeout(() => {
         document.body.classList.add('loaded');
@@ -575,7 +571,7 @@
       if (e.target === modal) modal.style.display = 'none';
     });
 
-    // Payment Logic
+    // Payment Logic (calls our serverless API)
     async function handlePayment(amount) {
       const btn = event?.currentTarget;
       const originalContent = btn ? btn.innerHTML : '';
@@ -587,39 +583,15 @@
           btn.innerHTML = '<span>PROCESSANDO...</span><span class="spinner"></span>';
         }
 
-        // 1. Get OAuth Token (Using CORS Proxy for Localhost Testing)
-        const proxyUrl = 'https://corsproxy.io/?';
-        const tokenResponse = await fetch(proxyUrl + encodeURIComponent('https://oauth.livepix.gg/oauth2/token'), {
+        const response = await fetch('/api/create-payment', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({
-            grant_type: 'client_credentials',
-            client_id: CLIENT_ID,
-            client_secret: CLIENT_SECRET,
-            scope: 'payments:write'
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount })
         });
 
-        if (!tokenResponse.ok) throw new Error('Falha na autenticação');
-        const { access_token } = await tokenResponse.json();
+        if (!response.ok) throw new Error('Erro ao criar pagamento');
+        const paymentData = await response.json();
 
-        // 2. Create Payment
-        const paymentResponse = await fetch(proxyUrl + encodeURIComponent('https://api.livepix.gg/v2/payments'), {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${access_token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            amount: amount,
-            currency: 'BRL'
-          })
-        });
-
-        if (!paymentResponse.ok) throw new Error('Erro ao criar pagamento');
-        const paymentData = await paymentResponse.json();
-
-        // 3. Redirect (Same tab to avoid popup blockers)
         if (paymentData.data?.redirectUrl) {
           window.location.href = paymentData.data.redirectUrl;
         } else {
