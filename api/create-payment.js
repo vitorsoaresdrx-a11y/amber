@@ -50,13 +50,18 @@ module.exports = async function handler(req, res) {
     }
 
     // 2. Create Payment
+    const origin = req.headers.origin || req.headers.referer || 'https://amber-zdv1.vercel.app';
     const paymentRes = await fetch('https://api.livepix.gg/v2/payments', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + tokenData.access_token,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ amount: amount, currency: 'BRL' })
+      body: JSON.stringify({
+        amount: amount,
+        currency: 'BRL',
+        redirectUrl: origin
+      })
     });
 
     const paymentText = await paymentRes.text();
