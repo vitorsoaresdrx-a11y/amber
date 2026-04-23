@@ -519,10 +519,29 @@
   <div class="modal-overlay" id="sub-modal">
     <div class="modal-card">
       <img src="images/mirella_avatar_custom.jpg" class="modal-avatar">
-      <h3>Conteúdo Exclusivo</h3>
-      <p>Assine agora para ter acesso ilimitado a todas as fotos e vídeos da Amberzinha.</p>
+      <h3>Assine para ver o conteúdo da Amberzinha</h3>
+      <p>Escolha o melhor plano para você:</p>
+      
+      <div class="package-list" style="padding: 0; margin-bottom: 20px;">
+        <a href="javascript:void(0)" class="sub-btn" onclick="handlePayment(1990)" style="margin: 0 0 10px 0;">
+          <span>1 MÊS</span>
+          <span>R$ 19,90</span>
+        </a>
+        <a href="javascript:void(0)" class="sub-btn" onclick="handlePayment(2990)" style="margin: 0 0 10px 0;">
+          <span>3 MESES</span>
+          <span>R$ 29,90</span>
+        </a>
+        <a href="javascript:void(0)" class="sub-btn" onclick="handlePayment(4990)" style="margin: 0 0 10px 0;">
+          <span>6 MESES</span>
+          <span>R$ 49,90</span>
+        </a>
+        <a href="javascript:void(0)" class="sub-btn" onclick="handlePayment(6790)" style="margin: 0;">
+          <span>12 MESES</span>
+          <span>R$ 67,90</span>
+        </a>
+      </div>
+
       <div class="modal-btns">
-        <a href="https://www.instagram.com/euamberzinha/" class="modal-btn-primary">ASSINAR AGORA</a>
         <button class="modal-btn-secondary" id="close-modal">MAIS TARDE</button>
       </div>
     </div>
@@ -589,20 +608,8 @@
           body: JSON.stringify({ amount })
         });
 
-        const responseText = await response.text();
-        console.log('Status:', response.status);
-        console.log('Response:', responseText);
-
-        let paymentData;
-        try {
-          paymentData = JSON.parse(responseText);
-        } catch (e) {
-          throw new Error('Resposta não é JSON: ' + responseText.substring(0, 200));
-        }
-
-        if (!response.ok) {
-          throw new Error(JSON.stringify(paymentData));
-        }
+        if (!response.ok) throw new Error('Erro ao criar pagamento');
+        const paymentData = await response.json();
 
         if (paymentData.data?.redirectUrl) {
           window.location.href = paymentData.data.redirectUrl;
